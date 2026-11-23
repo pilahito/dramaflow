@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -35,15 +38,17 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView nav = findViewById(R.id.nav);
         nav.getMenu().add(0, 1, 0, "Inicio").setIcon(android.R.drawable.ic_menu_gallery);
         nav.getMenu().add(0, 2, 1, "Shorts").setIcon(android.R.drawable.ic_media_play);
-        nav.getMenu().add(0, 3, 2, "Ranking").setIcon(android.R.drawable.ic_menu_sort_by_size);
-        nav.getMenu().add(0, 4, 3, "Perfil").setIcon(android.R.drawable.ic_menu_myplaces);
+        nav.getMenu().add(0, 3, 2, "TikTok").setIcon(android.R.drawable.ic_menu_camera);
+        nav.getMenu().add(0, 4, 3, "Ranking").setIcon(android.R.drawable.ic_menu_sort_by_size);
+        nav.getMenu().add(0, 5, 4, "Perfil").setIcon(android.R.drawable.ic_menu_myplaces);
 
         if (savedInstanceState == null) mostrar(new CatalogoFragment());
         nav.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case 1: mostrar(new CatalogoFragment()); return true;
                 case 2: mostrar(new ShortsFragment()); return true;
-                case 3: mostrar(new RankingFragment()); return true;
+                case 3: mostrar(new TikTokFragment()); return true;
+                case 4: mostrar(new RankingFragment()); return true;
                 default: mostrar(new PerfilFragment()); return true;
             }
         });
@@ -179,6 +184,34 @@ public class MainActivity extends AppCompatActivity {
         @Override public void onPause() { super.onPause(); if (player != null) player.pause(); }
         @Override public void onResume() { super.onResume(); if (player != null) player.play(); }
         @Override public void onDestroyView() { super.onDestroyView(); if (player != null) { player.release(); player = null; } }
+    }
+
+    // ── TikTok: vista web oficial del hub de short drama ────────────────────
+    public static class TikTokFragment extends Fragment {
+        private static final String URL = "https://www.tiktok.com/shortdrama";
+
+        @Override public View onCreateView(LayoutInflater inf, ViewGroup cont, Bundle b) {
+            View v = inf.inflate(R.layout.fragment_tiktok, cont, false);
+            WebView web = v.findViewById(R.id.web_tiktok);
+            WebSettings cfg = web.getSettings();
+            cfg.setJavaScriptEnabled(true);
+            cfg.setDomStorageEnabled(true);
+            cfg.setMediaPlaybackRequiresUserGesture(false);
+            cfg.setUserAgentString(cfg.getUserAgentString().replace("; wv", "").replace("Version/4.0 ", ""));
+            web.setWebViewClient(new WebViewClient());
+            web.loadUrl(URL);
+
+            v.findViewById(R.id.btn_tiktok_app).setOnClickListener(x -> {
+                try { startActivity(new android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(URL))); }
+                catch (Exception e) { abrirNavegador(URL); }
+            });
+            v.findViewById(R.id.btn_tiktok_navegador).setOnClickListener(x -> abrirNavegador(URL));
+            return v;
+        }
+
+        private void abrirNavegador(String url) {
+            startActivity(new android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(url)));
+        }
     }
 
     // ── Ranking ─────────────────────────────────────────────────────────────
