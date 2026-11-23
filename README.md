@@ -5,6 +5,12 @@ App Android de **series cortas** con catálogo de vídeos **libres** (dominio p�
 > No es un clon ni una modificación de ninguna app propietaria. Interfaz y código propios (MIT);
 > el contenido de ejemplo es de Blender Foundation (CC BY) y del bucket de muestras de Google.
 
+## Capturas (móvil real, Samsung SM-S928B)
+
+| Catálogo | Shorts | TikTok |
+|---|---|---|
+| ![catálogo](docs/catalogo.jpg) | ![shorts](docs/shorts.jpg) | ![tiktok](docs/tiktok.jpg) |
+
 ## Qué incluye
 
 - **Inicio**: catálogo en rejilla con **portada real** (fotograma extraído de cada película),
@@ -31,7 +37,7 @@ gradle assembleDebug
 ## Instalar
 
 ```bash
-adb install -r DramaFlow-1.2-debug.apk
+adb install -r DramaFlow-1.3-debug.apk
 ```
 
 ## Licencia

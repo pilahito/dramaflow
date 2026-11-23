@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.Player;
 import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.ui.AspectRatioFrameLayout;
 import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -174,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
             PlayerView pv = v.findViewById(R.id.player);
             pv.setUseController(false);
             pv.setKeepScreenOn(true);
+            pv.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
             player = new ExoPlayer.Builder(requireContext()).build();
             pv.setPlayer(player);
             player.setMediaItem(MediaItem.fromUri(a.getString("url")));
@@ -188,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
 
     // ── TikTok: vista web oficial del hub de short drama ────────────────────
     public static class TikTokFragment extends Fragment {
-        private static final String URL = "https://www.tiktok.com/shortdrama";
+        private static final String URL = "https://www.tiktok.com/tag/shortdrama";
 
         @Override public View onCreateView(LayoutInflater inf, ViewGroup cont, Bundle b) {
             View v = inf.inflate(R.layout.fragment_tiktok, cont, false);
