@@ -10,6 +10,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -188,31 +189,88 @@ public class MainActivity extends AppCompatActivity {
         @Override public void onDestroyView() { super.onDestroyView(); if (player != null) { player.release(); player = null; } }
     }
 
-    // ── TikTok: vista web oficial del hub de short drama ────────────────────
+    // ── TikTok: navegador dentro de la app (vista web oficial) ──────────────
     public static class TikTokFragment extends Fragment {
         private static final String URL = "https://www.tiktok.com/tag/shortdrama";
+        private static final String UA =
+            "Mozilla/5.0 (Linux; Android 14; SM-S928B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36";
+        private boolean aceptadas = false;
+        private WebView web;
+        private ProgressBar cargando;
 
         @Override public View onCreateView(LayoutInflater inf, ViewGroup cont, Bundle b) {
             View v = inf.inflate(R.layout.fragment_tiktok, cont, false);
-            WebView web = v.findViewById(R.id.web_tiktok);
+            web = v.findViewById(R.id.web_tiktok);
+            cargando = v.findViewById(R.id.cargando);
+
             WebSettings cfg = web.getSettings();
             cfg.setJavaScriptEnabled(true);
             cfg.setDomStorageEnabled(true);
+            cfg.setDatabaseEnabled(true);
             cfg.setMediaPlaybackRequiresUserGesture(false);
-            cfg.setUserAgentString(cfg.getUserAgentString().replace("; wv", "").replace("Version/4.0 ", ""));
-            web.setWebViewClient(new WebViewClient());
+            cfg.setLoadWithOverviewMode(true);
+            cfg.setUseWideViewPort(true);
+            cfg.setUserAgentString(UA);
+            cfg.setJavaScriptCanOpenWindowsAutomatically(true);
+            cfg.setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
+            web.setBackgroundColor(0xFF000000);
+            web.setWebViewClient(new WebViewClient() {
+                @Override public boolean shouldOverrideUrlLoading(WebView w, android.webkit.WebResourceRequest r) {
+                    String u = r.getUrl().toString();
+                    return !(u.contains("tiktok.com"));
+                }
+                @Override public void onPageFinished(WebView w, String url) {
+                    cargando.setVisibility(View.GONE);
+                    aceptarCookies(w);
+                    ((TextView) getView().findViewById(R.id.txt_url)).setText(url.replace("https://www.tiktok.com", "tiktok.com"));
+                }
+                @Override public void onPageStarted(WebView w, String url, android.graphics.Bitmap fav) {
+                    cargando.setVisibility(View.VISIBLE);
+                }
+            });
+            web.setWebChromeClient(new android.webkit.WebChromeClient());
             web.loadUrl(URL);
 
-            v.findViewById(R.id.btn_tiktok_app).setOnClickListener(x -> {
-                try { startActivity(new android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(URL))); }
-                catch (Exception e) { abrirNavegador(URL); }
-            });
-            v.findViewById(R.id.btn_tiktok_navegador).setOnClickListener(x -> abrirNavegador(URL));
+            v.findViewById(R.id.btn_atras).setOnClickListener(x -> { if (web.canGoBack()) web.goBack(); });
+            v.findViewById(R.id.btn_adelante).setOnClickListener(x -> { if (web.canGoForward()) web.goForward(); });
+            v.findViewById(R.id.btn_recargar).setOnClickListener(x -> web.reload());
+            v.findViewById(R.id.btn_tiktok_app).setOnClickListener(x -> abrirExterno(URL));
+            v.findViewById(R.id.btn_tiktok_navegador).setOnClickListener(x -> abrirExterno(URL));
             return v;
         }
 
-        private void abrirNavegador(String url) {
-            startActivity(new android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(url)));
+        // Acepta el banner de cookies de TikTok para poder navegar sin estorbo.
+        private void aceptarCookies(WebView w) {
+            // Reintenta varias veces: el banner aparece con retraso y a veces en un iframe.
+            for (int i = 0; i < 8; i++) {
+                final int n = i;
+                w.postDelayed(() -> {
+                    if (web == null) return;
+                    web.evaluateJavascript(
+                        "(function(){try{" +
+                        "const sel='button,a,div[role=button]';" +
+                        "const b=[...document.querySelectorAll(sel)].find(e=>/^(permitir todas|allow all|aceptar todo|accept all)$/i.test((e.innerText||'').trim()));" +
+                        "if(b){b.click();return 'clic';}" +
+                        "return 'no';" +
+                        "}catch(e){return 'err';}})();",
+                        r -> { if (!aceptadas && r != null && r.contains("clic")) { aceptadas = true; } });
+                }, 500L + n * 700L);
+            }
+        }
+
+        private void abrirExterno(String url) {
+            try { startActivity(new android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(url))); }
+            catch (Exception e) { }
+        }
+
+        public boolean atras() {
+            if (web != null && web.canGoBack()) { web.goBack(); return true; }
+            return false;
+        }
+
+        @Override public void onDestroyView() {
+            if (web != null) { web.destroy(); web = null; }
+            super.onDestroyView();
         }
     }
 

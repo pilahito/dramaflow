@@ -2,23 +2,38 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical" android:background="#0B0F19">
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="TikTok · short drama" android:textSize="28sp" android:textStyle="bold"
-        android:textColor="#F2F7FF" android:paddingHorizontal="18dp" android:paddingTop="18dp"/>
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="Vista web oficial de TikTok (no se descarga contenido)."
-        android:textSize="12sp" android:textColor="#8E8E93"
-        android:paddingHorizontal="18dp" android:paddingBottom="8dp"/>
+
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="horizontal" android:paddingHorizontal="14dp" android:paddingBottom="8dp">
-        <Button android:id="@+id/btn_tiktok_app" android:layout_width="0dp" android:layout_weight="1"
-            android:layout_height="wrap_content" android:text="Abrir en TikTok"
-            android:textAllCaps="false" android:textColor="#FFFFFF" android:backgroundTint="#8B5CF6"/>
-        <Button android:id="@+id/btn_tiktok_navegador" android:layout_width="0dp" android:layout_weight="1"
-            android:layout_height="wrap_content" android:text="Navegador"
-            android:textAllCaps="false" android:textColor="#FFFFFF" android:backgroundTint="#1B2438"
-            android:layout_marginStart="8dp"/>
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:paddingHorizontal="8dp" android:paddingVertical="6dp"
+        android:background="#111827">
+        <ImageButton android:id="@+id/btn_atras" android:layout_width="44dp" android:layout_height="44dp"
+            android:src="@android:drawable/ic_media_previous" android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="Atrás" android:tint="#E6EBF5"/>
+        <ImageButton android:id="@+id/btn_adelante" android:layout_width="44dp" android:layout_height="44dp"
+            android:src="@android:drawable/ic_media_next" android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="Adelante" android:tint="#E6EBF5"/>
+        <ImageButton android:id="@+id/btn_recargar" android:layout_width="44dp" android:layout_height="44dp"
+            android:src="@android:drawable/ic_menu_rotate" android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="Recargar" android:tint="#E6EBF5"/>
+        <TextView android:id="@+id/txt_url" android:layout_width="0dp" android:layout_weight="1"
+            android:layout_height="wrap_content" android:text="tiktok.com/tag/shortdrama"
+            android:textColor="#8E8E93" android:textSize="12sp" android:singleLine="true"
+            android:ellipsize="middle" android:paddingHorizontal="6dp"/>
+        <Button android:id="@+id/btn_tiktok_app" android:layout_width="wrap_content" android:layout_height="36dp"
+            android:text="TikTok" android:textSize="12sp" android:textAllCaps="false"
+            android:textColor="#FFFFFF" android:backgroundTint="#8B5CF6" android:minWidth="0dp"
+            android:paddingHorizontal="12dp" android:insetTop="0dp" android:insetBottom="0dp"/>
+        <Button android:id="@+id/btn_tiktok_navegador" android:layout_width="wrap_content" android:layout_height="36dp"
+            android:text="Web" android:textSize="12sp" android:textAllCaps="false"
+            android:textColor="#FFFFFF" android:backgroundTint="#1B2438" android:minWidth="0dp"
+            android:layout_marginStart="6dp" android:paddingHorizontal="12dp"
+            android:insetTop="0dp" android:insetBottom="0dp"/>
     </LinearLayout>
+
+    <ProgressBar android:id="@+id/cargando" android:layout_width="match_parent" style="?android:attr/progressBarStyleHorizontal"
+        android:layout_height="3dp" android:indeterminate="true" android:visibility="gone"/>
+
     <WebView android:id="@+id/web_tiktok" android:layout_width="match_parent" android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" android:background="#000000"/>
 </LinearLayout>

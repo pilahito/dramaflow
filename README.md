@@ -11,14 +11,17 @@ App Android de **series cortas** con catálogo de vídeos **libres** (dominio p�
 |---|---|---|
 | ![catálogo](docs/catalogo.jpg) | ![shorts](docs/shorts.jpg) | ![tiktok](docs/tiktok.jpg) |
 
+![TikTok dentro de la app](docs/tiktok-navegador.jpg)
+
 ## Qué incluye
 
 - **Inicio**: catálogo en rejilla con **portada real** (fotograma extraído de cada película),
   título, género y nota; **filtros por género** (Todos/Comedia/Fantasía/Sci-Fi).
 - **Shorts**: pager vertical a pantalla completa con ExoPlayer (reproduce el vídeo al deslizar).
-- **TikTok**: pestaña con la vista web oficial de [tiktok.com/shortdrama](https://www.tiktok.com/shortdrama)
-  y botones para abrirlo en la app de TikTok o en el navegador. No descarga ni reproduce contenido
-  de TikTok fuera de su reproductor oficial.
+- **TikTok**: navegador dentro de la app (botones atrás/adelante/recargar, URL y abrir en la app
+  oficial) cargando [tiktok.com/tag/shortdrama](https://www.tiktok.com/tag/shortdrama).
+  TikTok puede pedir su **verificación anti-bot (captcha de deslizar)**: hay que resolverla una vez,
+  no se automatiza. No se descarga ni se reproduce contenido de TikTok fuera de su web oficial.
 - **Ranking**: lista ordenada por nota (★).
 - **Perfil**: info de la app y licencias del contenido.
 - Reproductor a pantalla completa al tocar una serie.
@@ -37,7 +40,7 @@ gradle assembleDebug
 ## Instalar
 
 ```bash
-adb install -r DramaFlow-1.3-debug.apk
+adb install -r DramaFlow-1.4-debug.apk
 ```
 
 ## Licencia
