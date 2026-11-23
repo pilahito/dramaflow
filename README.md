@@ -7,9 +7,10 @@ App Android de **series cortas** con catálogo de vídeos **libres** (dominio p�
 
 ## Qué incluye
 
-- **Inicio**: catálogo en rejilla con portada por color, título y género.
+- **Inicio**: catálogo en rejilla con **portada real** (fotograma extraído de cada película),
+  título, género y nota; **filtros por género** (Todos/Comedia/Fantasía/Sci-Fi).
 - **Shorts**: pager vertical a pantalla completa con ExoPlayer (reproduce el vídeo al deslizar).
-- **Ranking**: lista ordenada del catálogo.
+- **Ranking**: lista ordenada por nota (★).
 - **Perfil**: info de la app y licencias del contenido.
 - Reproductor a pantalla completa al tocar una serie.
 
@@ -27,7 +28,7 @@ gradle assembleDebug
 ## Instalar
 
 ```bash
-adb install -r DramaFlow-1.0-debug.apk
+adb install -r DramaFlow-1.1-debug.apk
 ```
 
 ## Licencia

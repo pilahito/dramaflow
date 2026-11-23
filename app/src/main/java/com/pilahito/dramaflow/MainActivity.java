@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -54,54 +55,87 @@ public class MainActivity extends AppCompatActivity {
 
     // ── Datos legales: películas de dominio público / Creative Commons ──────
     public static class Serie {
-        public final String titulo, genero, url, color;
-        Serie(String t, String g, String u, String c) { titulo = t; genero = g; url = u; color = c; }
+        public final String titulo, genero, url, categoria;
+        public final int portada, nota;
+        Serie(String t, String g, String u, String cat, int img, int n) {
+            titulo = t; genero = g; url = u; categoria = cat; portada = img; nota = n;
+        }
     }
 
     public static List<Serie> catalogo() {
         List<Serie> l = new ArrayList<>();
-        l.add(new Serie("Big Buck Bunny", "Comedia · animación", "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", "#4C1D95"));
-        l.add(new Serie("Sintel", "Fantasía · drama", "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", "#7C2D12"));
-        l.add(new Serie("Elephants Dream", "Ciencia ficción", "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", "#1E3A8A"));
-        l.add(new Serie("Tears of Steel", "Ciencia ficción", "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", "#065F46"));
-        l.add(new Serie("For Bigger Blazes", "Acción", "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", "#7F1D1D"));
-        l.add(new Serie("For Bigger Escapes", "Aventura", "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", "#78350F"));
-        l.add(new Serie("Subaru Outback", "Documental", "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4", "#0C4A6E"));
-        l.add(new Serie("Volkswagen GTI Review", "Motor", "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4", "#3F3F46"));
+        l.add(new Serie("Big Buck Bunny", "Comedia · animación", "https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4", "Comedia", R.drawable.bbb, 96));
+        l.add(new Serie("Sintel", "Fantasía · drama", "https://archive.org/download/Sintel/sintel-2048-surround.mp4", "Fantasía", R.drawable.sintel, 94));
+        l.add(new Serie("Elephants Dream", "Ciencia ficción", "https://archive.org/download/ElephantsDream/ed_1024_512kb.mp4", "Sci-Fi", R.drawable.ed, 88));
+        l.add(new Serie("Tears of Steel", "Ciencia ficción", "https://download.blender.org/demo/movies/ToS/tears_of_steel_720p.mov", "Sci-Fi", R.drawable.tos, 91));
+        l.add(new Serie("Sintel · tráiler", "Fantasía", "https://download.blender.org/durian/trailer/sintel_trailer-720p.mp4", "Fantasía", R.drawable.sintel_trailer, 90));
+        l.add(new Serie("Sintel · avance", "Fantasía", "https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4", "Fantasía", R.drawable.sintel_480, 87));
         return l;
     }
 
     // ── Catálogo ────────────────────────────────────────────────────────────
     public static class CatalogoFragment extends Fragment {
+        private Adaptador adaptador;
+        private String categoria = "Todos";
+
         @Override public View onCreateView(LayoutInflater inf, ViewGroup cont, Bundle b) {
             View v = inf.inflate(R.layout.fragment_catalogo, cont, false);
             RecyclerView lista = v.findViewById(R.id.lista);
             lista.setLayoutManager(new GridLayoutManager(getContext(), 2));
-            lista.setAdapter(new Adaptador(catalogo()));
+            adaptador = new Adaptador(catalogo());
+            lista.setAdapter(adaptador);
+
+            LinearLayout chips = v.findViewById(R.id.chips);
+            for (String cat : new String[]{"Todos", "Comedia", "Fantasía", "Sci-Fi"}) {
+                TextView chip = (TextView) inf.inflate(R.layout.chip_genero, chips, false);
+                chip.setText(cat);
+                chip.setOnClickListener(c -> { categoria = cat; adaptador.filtrar(cat); refrescarChips(chips, cat); });
+                chips.addView(chip);
+            }
+            refrescarChips(chips, "Todos");
             return v;
+        }
+
+        private void refrescarChips(LinearLayout chips, String activa) {
+            for (int i = 0; i < chips.getChildCount(); i++) {
+                TextView c = (TextView) chips.getChildAt(i);
+                boolean on = c.getText().toString().equals(activa);
+                c.setTextColor(on ? 0xFFFFFFFF : 0xFFCFD8E6);
+                c.setBackgroundResource(on ? R.drawable.fondo_chip_activo : R.drawable.fondo_chip);
+            }
         }
     }
 
     static class Adaptador extends RecyclerView.Adapter<Adaptador.VH> {
-        private final List<Serie> datos;
-        Adaptador(List<Serie> d) { datos = d; }
+        private final List<Serie> todos;
+        private final List<Serie> datos = new ArrayList<>();
+        Adaptador(List<Serie> d) { todos = d; datos.addAll(d); }
+
+        void filtrar(String cat) {
+            datos.clear();
+            for (Serie s : todos) if (cat.equals("Todos") || s.categoria.equals(cat)) datos.add(s);
+            notifyDataSetChanged();
+        }
+
         @NonNull @Override public VH onCreateViewHolder(@NonNull ViewGroup p, int t) {
             return new VH(LayoutInflater.from(p.getContext()).inflate(R.layout.item_serie, p, false));
         }
         @Override public void onBindViewHolder(@NonNull VH h, int i) {
             Serie s = datos.get(i);
-            h.color.setBackground(new ColorDrawable(Color.parseColor(s.color)));
+            h.portada.setImageResource(s.portada);
+            h.nota.setText(String.valueOf(s.nota));
             h.titulo.setText(s.titulo);
             h.genero.setText(s.genero);
-            h.itemView.setOnClickListener(v -> Reproducir.abrir(getActivityOrNull(v), s));
-        }
-        private android.app.Activity getActivityOrNull(View v) {
-            return (android.app.Activity) v.getContext();
+            h.itemView.setOnClickListener(v -> Reproducir.abrir((android.app.Activity) v.getContext(), s));
         }
         @Override public int getItemCount() { return datos.size(); }
         static class VH extends RecyclerView.ViewHolder {
-            View color; TextView titulo, genero;
-            VH(View v) { super(v); color = v.findViewById(R.id.color); titulo = v.findViewById(R.id.titulo); genero = v.findViewById(R.id.genero); }
+            android.widget.ImageView portada; TextView titulo, genero, nota;
+            VH(View v) {
+                super(v);
+                portada = v.findViewById(R.id.portada); titulo = v.findViewById(R.id.titulo);
+                genero = v.findViewById(R.id.genero); nota = v.findViewById(R.id.nota);
+            }
         }
     }
 
@@ -133,6 +167,8 @@ public class MainActivity extends AppCompatActivity {
             Bundle a = getArguments();
             ((TextView) v.findViewById(R.id.titulo)).setText(a.getString("titulo"));
             PlayerView pv = v.findViewById(R.id.player);
+            pv.setUseController(false);
+            pv.setKeepScreenOn(true);
             player = new ExoPlayer.Builder(requireContext()).build();
             pv.setPlayer(player);
             player.setMediaItem(MediaItem.fromUri(a.getString("url")));
@@ -151,7 +187,11 @@ public class MainActivity extends AppCompatActivity {
             View v = inf.inflate(R.layout.fragment_ranking, cont, false);
             List<Serie> l = catalogo();
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < l.size(); i++) sb.append(i + 1).append(".  ").append(l.get(i).titulo).append("\n     ").append(l.get(i).genero).append("\n\n");
+            l.sort((x, y) -> Integer.compare(y.nota, x.nota));
+            for (int i = 0; i < l.size(); i++)
+                sb.append(i + 1).append(".   ").append(l.get(i).titulo)
+                  .append("   ★ ").append(l.get(i).nota).append("\n      ")
+                  .append(l.get(i).genero).append("\n\n");
             ((TextView) v.findViewById(R.id.lista_ranking)).setText(sb.toString());
             return v;
         }
