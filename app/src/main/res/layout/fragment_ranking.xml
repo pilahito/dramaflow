@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="#0B0F19" android:padding="16dp">
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="Ranking" android:textSize="30sp" android:textStyle="bold" android:textColor="#F2F7FF"/>
+    <TextView android:id="@+id/lista_ranking" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textColor="#E6EBF5" android:textSize="15sp" android:lineSpacingExtra="10dp" android:paddingTop="12dp"/>
+</LinearLayout>

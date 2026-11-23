@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:orientation="vertical" android:layout_margin="6dp"
+    android:background="@drawable/fondo_tarjeta" android:padding="10dp">
+    <View android:id="@+id/color" android:layout_width="match_parent" android:layout_height="150dp"/>
+    <TextView android:id="@+id/titulo" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textColor="#F2F7FF" android:textStyle="bold" android:textSize="14sp" android:paddingTop="8dp"/>
+    <TextView android:id="@+id/genero" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textColor="#A5B4FC" android:textSize="11sp"/>
+</LinearLayout>

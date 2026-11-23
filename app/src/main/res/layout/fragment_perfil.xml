@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="#0B0F19" android:padding="18dp">
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="Perfil" android:textSize="30sp" android:textStyle="bold" android:textColor="#F2F7FF"/>
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="DramaFlow 1.0 · catálogo de películas de dominio público y Creative Commons.\n\nSin cuentas, sin anuncios, sin telemetría.\n\nVídeos: Blender Foundation (CC BY) y Google sample bucket." android:textColor="#8E8E93"
+        android:textSize="13sp" android:paddingTop="10dp"/>
+</LinearLayout>
